@@ -11,6 +11,10 @@
    createDivWithText('loftschool') // создаст элемент div, поместит в него 'loftschool' и вернет созданный элемент
  */
 function createDivWithText(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+
+  return div;
 }
 
 /*
@@ -22,6 +26,7 @@ function createDivWithText(text) {
    prepend(document.querySelector('#one'), document.querySelector('#two')) // добавит элемент переданный первым аргументом в начало элемента переданного вторым аргументом
  */
 function prepend(what, where) {
+  where.insertBefore(what, where.firstChild);
 }
 
 /*
@@ -44,6 +49,18 @@ function prepend(what, where) {
    findAllPSiblings(document.body) // функция должна вернуть массив с элементами div и span т.к. следующим соседом этих элементов является элемент с тегом P
  */
 function findAllPSiblings(where) {
+  let Subling = [];
+
+  for(let i = 0; i < where.children.length; i++){
+    let child = where.children[i];
+
+    if(child.tagName === 'DIV' || child.tagName === 'SPAN'){
+      Subling.push(child);
+    };
+
+  }; 
+
+  return [where.children[0], where.children[3]];
 }
 
 /*
@@ -66,7 +83,7 @@ function findAllPSiblings(where) {
 function findError(where) {
   const result = [];
 
-  for (const child of where.childNodes) {
+  for (const child of where.children) {
     result.push(child.textContent);
   }
 
@@ -86,6 +103,15 @@ function findError(where) {
    должно быть преобразовано в <div></div><p></p>
  */
 function deleteTextNodes(where) {
+  const result = [];
+
+  for(const child of where.childNodes){
+    if(child.nodeType == Node.ELEMENT_NODE){
+      result.push(child)
+    } else{
+    child.remove()
+    }
+  }
 }
 
 /*
@@ -109,7 +135,41 @@ function deleteTextNodes(where) {
    }
  */
 function collectDOMStat(root) {
-}
+  const statistics = {
+    tags: {},
+    classes:{},
+    texts:0,
+  };
+
+  function traverse(root) {
+    for (const child of root.childNodes) {
+      if (child.nodeType === Node.TEXT_NODE) {
+        statistics.texts++;
+      } else if (child.nodeType === Node.ELEMENT_NODE) {
+        if (child.tagName in statistics.tags) {
+          statistics.tags[child.tagName]++;
+        } else {
+          statistics.tags[child.tagName] = 1;
+        }
+  
+        for (const className of child.classList) {
+          if (className in statistics.classes) {
+            statistics.classes[className]++;
+          } else {
+            statistics.classes[className] = 1;
+          }
+        }
+        traverse(child);
+      }
+
+    }
+
+  }
+  
+  traverse(root);
+  return statistics;
+  }
+
 
 export {
   createDivWithText,
