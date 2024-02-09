@@ -1,7 +1,10 @@
-import pages from './pages';
-import('./styles.css');
+import mainPage from './mainPage';
+import loginPage from './loginPage';
+import profilePage from './profilePage'; // в верхней части
 
-const pageNames = ['login', 'main', 'profile'];
+pages.openPage('login');
+loginPage.handleEvents();
+mainPage.handleEvents();
 
 document.addEventListener('click', () => {
     const pages = pageNames;
@@ -11,4 +14,7 @@ document.addEventListener('click', () => {
 
     pages.OpenPage(randomElem)
 });
+
+
+profilePage.handleEvents(); // в нижней части
 
